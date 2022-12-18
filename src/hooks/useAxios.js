@@ -1,27 +1,33 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 
-axios.defaults.baseURL = 'https://jsonplaceholder.typicode.com';
+const useAxios = (url, method, payload) => {
+  const [data, setData] = useState(null);
+  const [error, setError] = useState("");
+  const [loaded, setLoaded] = useState(false);
+  const controllerRef = useRef(new AbortController());
+  const cancel = () => {
+    controllerRef.current.abort();
+  };
 
-export const useAxios = (axiosParams) => {
-    const [response, setResponse] = useState(undefined);
-    const [error, setError] = useState('');
-    const [loading, setLoading] = useState(true);
-
-    const fetchData = async (params) => {
+  useEffect(() => {
+    (async () => {
       try {
-       const result = await axios.request(params);
-       setResponse(result.data);
-       } catch( error ) {
-         setError(error);
-       } finally {
-         setLoading(false);
-       }
-    };
+        const response = await axios.request({
+          data: payload,
+          signal: controllerRef.current.signal,
+          method,
+          url,
+        });
 
-    useEffect(() => {
-        fetchData(axiosParams);
-    }, []); // execute once only
+        setData(response.data);
+      } catch (error) {
+        setError(error.message);
+      } finally {
+        setLoaded(true);
+      }
+    })();
+  }, []);
 
-    return { response, error, loading };
+  return { cancel, data, error, loaded };
 };
