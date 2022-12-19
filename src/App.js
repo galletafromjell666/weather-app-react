@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useAxios } from "./hooks/useAxios";
 //icons
 import {
@@ -25,21 +25,25 @@ import { ImSpinner8 } from "react-icons/im";
 const API_KEY = process.env.REACT_APP_WEATHER_API_KEY;
 
 const App = () => {
-  const [location, setLocation] = useState("London,GB");
+  const apiFormatter = (usrInput = "Santa Ana, SV") => {
+    let newRequest = `https://api.openweathermap.org/data/2.5/weather?q=${usrInput}&units=metric&appid=${API_KEY}`;
+    return newRequest;
+  };
+  const [urlRequest, setUrlRequest] = useState(apiFormatter);
   const [formText, setFormText] = useState("");
-  const [urlRequest, setUrlRequest] = useState(
-    `https://api.openweathermap.org/data/2.5/weather?q=${location}&units=metric&appid=${API_KEY}`
-  );
-
   //fetching data with useAxios custom hook
   const { data, error, loaded } = useAxios(urlRequest, "get");
-  const handleSubmit = (event) => {
-    event.preventDefault();
+  //form submit handler fn
+  const handleSubmit = (e) => {
+    e.preventDefault();
     if (formText) {
-      let newUrlRequest = `https://api.openweathermap.org/data/2.5/weather?q=${formText}&units=metric&appid=${API_KEY}`;
-      setUrlRequest(newUrlRequest);
+      setUrlRequest(apiFormatter(formText));
+      //remove text from input
+      setFormText("");
     }
   };
+
+  const handleChange = (e) => setFormText(e.target.value);
 
   //loader
   if (!data) {
@@ -101,7 +105,9 @@ const App = () => {
           <div className="h-full relative flex items-center justify-between p-2">
             <input
               value={formText}
-              onChange={(e) => setFormText(e.target.value)}
+              onChange={(e) => {
+                handleChange(e);
+              }}
               className="flex-1 bg-transparent outline-none placeholder:text-white text-white text-[15px] font-light pl-6 h-full"
               type="text"
               placeholder="Search by city || country"
@@ -195,32 +201,6 @@ const App = () => {
           </div>
         </div>
       </div>
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <div>
-        <h1>location: {location}</h1>
-        <h2>formText = {formText}</h2>
-        {loaded && <h1>DATA: {JSON.stringify(data)}</h1>}
-        <h2>ERROR: {error + ""}</h2>
-        <h2>LOADED: {loaded + ""}</h2>
-        <form onSubmit={handleSubmit}>
-          <label>
-            Enter your name:
-            <input
-              style={{ backgroundColor: "red", marginLeft: "20px" }}
-              type="text"
-              value={formText}
-              onChange={(e) => setFormText(e.target.value)}
-            />
-          </label>
-          <input style={{ backgroundColor: "#fafafa" }} type="submit" />
-        </form>
-      </div>
-      react app
     </div>
   );
 };
