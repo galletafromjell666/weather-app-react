@@ -20,9 +20,11 @@ const useAxios = (url, method, payload) => {
           url,
         });
         console.log("USE AXIOS", response.data)
+        setError("")
         setData(response.data);
       } catch (error) {
         setError(error.message);
+        console.log("USE AXIOS ERROR", error.request.statusText)
       } finally {
         setLoaded(true);
       }

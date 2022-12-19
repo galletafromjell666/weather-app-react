@@ -22,7 +22,7 @@ module.exports = {
         },
       },
       animation: {
-        shake: 'shake 150ms 2 linear',
+        shake: 'shake 150ms 3 linear',
       },
     },
   },
