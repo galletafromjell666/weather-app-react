@@ -1,6 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect} from "react";
 import { useAxios } from "./hooks/useAxios";
-import { useTimeout } from "./hooks/useTimeout";
 //icons
 import {
   IoMdSunny,
@@ -30,15 +29,18 @@ const App = () => {
     let newRequest = `https://api.openweathermap.org/data/2.5/weather?q=${usrInput}&units=metric&appid=${API_KEY}`;
     return newRequest;
   };
+
   const [urlRequest, setUrlRequest] = useState(apiFormatter);
   const [formText, setFormText] = useState("");
-  const [errAnimation, setErrAnimation] = useState(false)
-  const [timeoutAnimation, setTimeoutAnimation] = useState(0)
-  //use timeout hool
-  useTimeout(()=>{
-  setErrAnimation(false)
-  setTimeoutAnimation(0)
-  },timeoutAnimation)
+  const [errAnimation, setErrAnimation] = useState(false);
+  const [inputErr, setInputErr] = useState(false)
+  //timeout used on form animation
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+       setErrAnimation(false);
+     }, 900);
+    return () => clearTimeout(timeout);
+   },[inputErr]);
   //fetching data with useAxios custom hook
   const { data, error, loaded } = useAxios(urlRequest, "get");
   //form submit handler fn
@@ -48,13 +50,12 @@ const App = () => {
       setUrlRequest(apiFormatter(formText));
       //remove text from input
       setFormText("");
-    }else{
-      setErrAnimation(true)
-      setTimeoutAnimation(800)
+    } else { 
+      setErrAnimation(true);
+      //trigger useEffect and its setTimeout
+      setInputErr(!inputErr)
     }
   };
-
-
 
   const handleChange = (e) => setFormText(e.target.value);
 
@@ -105,7 +106,6 @@ const App = () => {
   const date = new Date();
 
   return (
-    <div>
       <div
         className="w-full h-screen bg-gradientBg bg-no-repeat bg-cover bg-center flex flex-col items-center justify-center px-4 lg:px-0"
         id="root"
@@ -113,7 +113,9 @@ const App = () => {
         {/* input form */}
         <form
           onSubmit={handleSubmit}
-          className={`${errAnimation ? 'animate-shake' : 'animate-none'} h-16 bg-black/30 w-full max-w-[450px] rounded-full backdrop-blur-[32px] mb-8`}
+          className={`${
+            errAnimation ? "animate-shake" : "animate-none"
+          } h-16 bg-black/30 w-full max-w-[450px] rounded-full backdrop-blur-[32px] mb-8`}
         >
           <div className="h-full relative flex items-center justify-between p-2">
             <input
@@ -214,7 +216,6 @@ const App = () => {
           </div>
         </div>
       </div>
-    </div>
   );
 };
 
