@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useAxios } from "./hooks/useAxios";
+import { useTimeout } from "./hooks/useTimeout";
 //icons
 import {
   IoMdSunny,
@@ -31,6 +32,13 @@ const App = () => {
   };
   const [urlRequest, setUrlRequest] = useState(apiFormatter);
   const [formText, setFormText] = useState("");
+  const [errAnimation, setErrAnimation] = useState(false)
+  const [timeoutAnimation, setTimeoutAnimation] = useState(0)
+  //use timeout hool
+  useTimeout(()=>{
+  setErrAnimation(false)
+  setTimeoutAnimation(0)
+  },timeoutAnimation)
   //fetching data with useAxios custom hook
   const { data, error, loaded } = useAxios(urlRequest, "get");
   //form submit handler fn
@@ -40,13 +48,18 @@ const App = () => {
       setUrlRequest(apiFormatter(formText));
       //remove text from input
       setFormText("");
+    }else{
+      setErrAnimation(true)
+      setTimeoutAnimation(800)
     }
   };
+
+
 
   const handleChange = (e) => setFormText(e.target.value);
 
   //loader
-  if (!data) {
+  if (!loaded) {
     return (
       <div>
         <div>
@@ -100,7 +113,7 @@ const App = () => {
         {/* input form */}
         <form
           onSubmit={handleSubmit}
-          className="h-16 bg-black/30 w-full max-w-[450px] rounded-full backdrop-blur-[32px] mb-8"
+          className={`${errAnimation ? 'animate-shake' : 'animate-none'} h-16 bg-black/30 w-full max-w-[450px] rounded-full backdrop-blur-[32px] mb-8`}
         >
           <div className="h-full relative flex items-center justify-between p-2">
             <input
