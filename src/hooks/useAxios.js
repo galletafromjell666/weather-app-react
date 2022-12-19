@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 
 const useAxios = (url, method, payload) => {
@@ -19,7 +19,7 @@ const useAxios = (url, method, payload) => {
           method,
           url,
         });
-
+        console.log("USE AXIOS", response.data)
         setData(response.data);
       } catch (error) {
         setError(error.message);
@@ -27,7 +27,8 @@ const useAxios = (url, method, payload) => {
         setLoaded(true);
       }
     })();
-  }, []);
-
+  }, [method, payload, url]);
   return { cancel, data, error, loaded };
 };
+
+export {useAxios}
