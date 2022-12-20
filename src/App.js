@@ -91,11 +91,11 @@ const App = () => {
   const date = new Date();
   return (
     <div
-      className="w-full h-screen bg-gradientBg bg-no-repeat bg-cover bg-center flex flex-col items-center justify-center px-4 lg:px-0"
+      className="w-full min-h-screen max-h-fit py-2 bg-gradientBg bg-no-repeat bg-cover bg-center flex flex-col items-center justify-center px-4 lg:px-0 lg:py-4"
       id="root"
     >
       {errorAnimationTimer && (
-        <div className="w-full h-max-w-[90vw] lg:max-w-[450px] bg-rose-600 text-white absolute top-2 lg:top-10 p-4 capitalize rounded-md">
+        <div className="w-full h-max-w-[90vw] text-center bg-rose-600 text-white absolute z-10 top-2 lg:top-10 p-4 capitalize rounded-md">
           {error.message}
         </div>
       )}
@@ -104,7 +104,7 @@ const App = () => {
         onSubmit={handleSubmit}
         className={`${
           errAnimation ? "animate-shake" : "animate-none"
-        } h-16 bg-black/30 w-full max-w-[450px] rounded-full backdrop-blur-[32px] mb-8`}
+        } h-16 bg-black/30 w-full max-w-[450px] rounded-full backdrop-blur-[32px] mb-2 lg:mb-8`}
       >
         <div className="h-full relative flex items-center justify-between p-2">
           <input
@@ -112,13 +112,13 @@ const App = () => {
             onChange={(e) => {
               handleChange(e);
             }}
-            className="flex-1 bg-transparent outline-none placeholder:text-white text-white text-[15px] font-light pl-6 h-full"
+            className="flex-1 relative bg-transparent outline-none placeholder:text-white text-white text-[15px] font-light pl-6 h-full"
             type="text"
             placeholder="Search by city || country"
           />
           <button
             type="submit"
-            className="bg-cyan-400/50 w-16 h-12 rounded-full flex justify-center items-center transition hover:bg-cyan-700"
+            className="bg-cyan-400/50 absolute right-2 w-14 h-12 rounded-full flex justify-center items-center transition hover:bg-cyan-700"
           >
             <IoMdSearch className="text-2xl text-white" />
           </button>
@@ -154,8 +154,8 @@ const App = () => {
             </div>
           </div>
           {/* Card Bottom */}
-          <div className="max-w-[375px] mx-auto flex flex-col gap-y-6">
-            <div className="flex justify-between">
+          <div className="max-w-[375px] mx-auto flex flex-col gap-y-4 md:gap-y-6">
+            <div className="flex justify-between items-center flex-col gap-y-4 md:flex-row">
               <div className="flex items-center gap-x-2">
                 <div className="text-[20px]">
                   <BsEye />
@@ -180,7 +180,7 @@ const App = () => {
                 </div>
               </div>
             </div>
-            <div className="flex justify-between">
+            <div className="flex flex-col items-center justify-between gap-y-4 md:flex-row">
               <div className="flex items-center gap-x-2">
                 <div className="text-[20px]">
                   <BsWater />
