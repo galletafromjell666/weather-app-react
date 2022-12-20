@@ -95,7 +95,7 @@ const App = () => {
       id="root"
     >
       {errorAnimationTimer && (
-        <div className="w-full h-max-w-[90vw] text-center bg-rose-600 text-white absolute z-10 top-2 lg:top-10 p-4 capitalize rounded-md">
+        <div className="w-full h-max-w-[90vw] lg:max-w-[450px] bg-rose-600 text-white absolute z-10 top-2 lg:top-8 p-4 capitalize rounded-md">
           {error.message}
         </div>
       )}
