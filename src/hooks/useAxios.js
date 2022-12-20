@@ -1,9 +1,11 @@
-import { useState, useEffect, useRef } from 'react';
-import axios from 'axios';
+import { useState, useEffect, useRef } from "react";
+import axios from "axios";
+import { v4 as uuidv4 } from "uuid";
 
 const useAxios = (url, method, payload) => {
   const [data, setData] = useState(null);
   const [error, setError] = useState("");
+  const [errorAnimationTimer, setErrorAnimationTimer] = useState(false);
   const [loaded, setLoaded] = useState(false);
   const controllerRef = useRef(new AbortController());
   const cancel = () => {
@@ -11,7 +13,9 @@ const useAxios = (url, method, payload) => {
   };
 
   useEffect(() => {
+    let timeout;
     (async () => {
+      setLoaded(false);
       try {
         const response = await axios.request({
           data: payload,
@@ -19,18 +23,25 @@ const useAxios = (url, method, payload) => {
           method,
           url,
         });
-        console.log("USE AXIOS", response.data)
-        setError("")
         setData(response.data);
       } catch (error) {
-        setError(error.message);
-        console.log("USE AXIOS ERROR", error.request.statusText)
+        let id = uuidv4();
+        let er = { ...error, id };
+        setErrorAnimationTimer(true);
+        timeout = setTimeout(() => {
+          setErrorAnimationTimer(false);
+        }, 1400);
+        setError(er);
       } finally {
-        setLoaded(true);
+        //mock response delay
+        timeout = setTimeout(() => {
+          setLoaded(true);
+        }, 100);
       }
     })();
+    return () => clearTimeout(timeout);
   }, [method, payload, url]);
-  return { cancel, data, error, loaded };
+  return { cancel, data, error, loaded, errorAnimationTimer };
 };
 
-export {useAxios}
+export { useAxios };
